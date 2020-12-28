@@ -49,7 +49,7 @@ testImgPath = '/content/images'
 saveFlowPath = '/content/flow_cla'
 
 correct = 0
-for img in os.listdir(testImgPath):
+for idx, img in enumerate(os.listdir(testImgPath)):
     imgPath = os.path.join(testImgPath, img)
     disimgs = io.imread(imgPath)
     disimgs = transform(disimgs)
@@ -73,6 +73,6 @@ for img in os.listdir(testImgPath):
     v = flow_output.data.cpu().numpy()[0][1]
 
     idx = split(img, jpg)[0]
-    saveMatPath =  os.path.join(saveFlowPath, f'mat_{idx}.mat')
+    saveMatPath =  os.path.join(saveFlowPath, f'mat_{str(idx).zfill(6)}.mat')
     scio.savemat(saveMatPath, {'u': u,'v': v}) 
 
