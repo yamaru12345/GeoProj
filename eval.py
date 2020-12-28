@@ -72,6 +72,7 @@ for img in os.listdir(testImgPath):
     u = flow_output.data.cpu().numpy()[0][0]
     v = flow_output.data.cpu().numpy()[0][1]
 
-    saveMatPath =  '%s%s%s%s%s%s' % (saveFlowPath, '/',types,'_', str(k).zfill(6), '.mat')
+    idx = split(img, jpg)[0]
+    saveMatPath =  os.path.join(saveFlowPath, f'mat_{idx}.mat')
     scio.savemat(saveMatPath, {'u': u,'v': v}) 
 
