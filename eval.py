@@ -35,8 +35,8 @@ model_en.eval()
 model_de.eval()
 model_class.eval()  
 
-testImgPath = '/home/xliea/Dataset256/Dataset256/test/distorted'
-saveFlowPath = '/home/xliea/test/flow_256/flow_cla'
+testImgPath = '/content/images'
+saveFlowPath = '/content/flow_cla'
 
 correct = 0
 for index, types in enumerate(['barrel','pincushion','rotation','shear','projective','wave']):
