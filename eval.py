@@ -1,3 +1,4 @@
+impor os
 import torch
 from torch.autograd import Variable
 import torch.nn as nn
@@ -48,31 +49,29 @@ testImgPath = '/content/images'
 saveFlowPath = '/content/flow_cla'
 
 correct = 0
-for index, types in enumerate(['barrel','pincushion','rotation','shear','projective','wave']):
-    for k in range(50000,55000):
+for img in os.listdir(testImgPath):
+    imgPath = os.path.join(testImgPath, img)
+    disimgs = io.imread(imgPath)
+    disimgs = transform(disimgs)
 
-        imgPath = '%s%s%s%s%s%s' % (testImgPath, '/',types,'_', str(k).zfill(6), '.jpg')
-        disimgs = io.imread(imgPath)
-        disimgs = transform(disimgs)
-        
-        use_GPU = torch.cuda.is_available()
-        if use_GPU:
-            disimgs = disimgs.cuda()
-        
-        disimgs = disimgs.view(1,3,256,256)
-        disimgs = Variable(disimgs)
-        
-        middle = model_en(disimgs)
-        flow_output = model_de(middle)
-        clas = model_class(middle)
-        
-        _, predicted = torch.max(clas.data, 1)
-        if predicted.cpu().numpy()[0] == index:
-            correct += 1
+    use_GPU = torch.cuda.is_available()
+    if use_GPU:
+        disimgs = disimgs.cuda()
 
-        u = flow_output.data.cpu().numpy()[0][0]
-        v = flow_output.data.cpu().numpy()[0][1]
+    disimgs = disimgs.view(1,3,256,256)
+    disimgs = Variable(disimgs)
 
-        saveMatPath =  '%s%s%s%s%s%s' % (saveFlowPath, '/',types,'_', str(k).zfill(6), '.mat')
-        scio.savemat(saveMatPath, {'u': u,'v': v}) 
+    middle = model_en(disimgs)
+    flow_output = model_de(middle)
+    clas = model_class(middle)
+
+    _, predicted = torch.max(clas.data, 1)
+    if predicted.cpu().numpy()[0] == index:
+        correct += 1
+
+    u = flow_output.data.cpu().numpy()[0][0]
+    v = flow_output.data.cpu().numpy()[0][1]
+
+    saveMatPath =  '%s%s%s%s%s%s' % (saveFlowPath, '/',types,'_', str(k).zfill(6), '.mat')
+    scio.savemat(saveMatPath, {'u': u,'v': v}) 
 
