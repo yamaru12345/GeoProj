@@ -15,21 +15,29 @@ model_en = EncoderNet([1,1,1,1,2])
 model_de = DecoderNet([1,1,1,1,2])
 model_class = ClassNet()
 
-if torch.cuda.device_count() > 1:
-    print("Let's use", torch.cuda.device_count(), "GPUs!")
-    model_en = nn.DataParallel(model_en)
-    model_de = nn.DataParallel(model_de)
-    model_class = nn.DataParallel(model_class)
+#if torch.cuda.device_count() > 1:
+#    print("Let's use", torch.cuda.device_count(), "GPUs!")
+#    model_en = nn.DataParallel(model_en)
+#    model_de = nn.DataParallel(model_de)
+#    model_class = nn.DataParallel(model_class)
 
 if torch.cuda.is_available():
     model_en = model_en.cuda()
     model_de = model_de.cuda()
     model_class = model_class.cuda()
 
+def fix_model_state_dict(state_dict):
+    new_state_dict = OrderedDict()
+    for k, v in state_dict.items():
+        name = k
+        if name.startswith('module.'):
+            name = name[7:]  # remove 'module.' of dataparallel
+        new_state_dict[name] = v
+    return new_state_dict
 
-model_en.load_state_dict(torch.load('model_en.pkl'))
-model_de.load_state_dict(torch.load('model_de.pkl'))
-model_class.load_state_dict(torch.load('model_class.pkl'))
+model_en.load_state_dict(fix_model_state_dict(torch.load('model_en.pkl')))
+model_de.load_state_dict(fix_model_state_dict(torch.load('model_de.pkl')))
+model_class.load_state_dict(fix_model_state_dict(torch.load('model_class.pkl')))
 
 model_en.eval()
 model_de.eval()
