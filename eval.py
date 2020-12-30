@@ -58,7 +58,7 @@ for idx, img in enumerate(os.listdir(testImgPath)):
     if use_GPU:
         disimgs = disimgs.cuda()
 
-    disimgs = disimgs.view(1, 3, 720, 1280)
+    disimgs = disimgs.view(1, 3, 512, 512)
     disimgs = Variable(disimgs)
 
     middle = model_en(disimgs)
