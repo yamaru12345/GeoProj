@@ -65,9 +65,9 @@ for idx, img in enumerate(os.listdir(testImgPath)):
     flow_output = model_de(middle)
     clas = model_class(middle)
 
-    _, predicted = torch.max(clas.data, 1)
-    if predicted.cpu().numpy()[0] == index:
-        correct += 1
+    #_, predicted = torch.max(clas.data, 1)
+    #if predicted.cpu().numpy()[0] == index:
+    #    correct += 1
 
     u = flow_output.data.cpu().numpy()[0][0]
     v = flow_output.data.cpu().numpy()[0][1]
